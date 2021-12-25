@@ -12,6 +12,7 @@ const Navbar = () => {
   const logoutHandler = () => {
     logout();
   };
+
   return (
     <nav className='navbar'>
       <ul>

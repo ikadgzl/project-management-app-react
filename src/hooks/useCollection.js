@@ -23,6 +23,8 @@ export const useCollection = (collection, _query, _orderBy) => {
           documents.push({ ...doc.data(), id: doc.id });
         });
 
+        console.log(documents);
+
         setDocuments(documents);
         setError(null);
       },
