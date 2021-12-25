@@ -31,7 +31,7 @@ const firestoreReducer = (state, action) => {
       };
 
     default:
-      state;
+      return state;
   }
 };
 
