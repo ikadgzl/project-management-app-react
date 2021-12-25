@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { LOGIN } from '../context/authReducerTypes';
-import { projectAuth, projectStorage } from '../firebase/config';
+import {
+  projectAuth,
+  projectFirestore,
+  projectStorage
+} from '../firebase/config';
 import { useAuthContext } from '../hooks/useAuthContext';
 
 export const useSignup = () => {
@@ -29,6 +33,12 @@ export const useSignup = () => {
       const photoURL = await img.ref.getDownloadURL();
 
       await res.user.updateProfile({ displayName, photoURL });
+
+      await projectFirestore.collection('users').doc(res.user.uid).set({
+        online: true,
+        displayName,
+        photoURL
+      });
 
       dispatch({ type: LOGIN, payload: res.user });
 

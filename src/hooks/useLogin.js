@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useAuthContext } from '../context/AuthContext';
-import { LOGIN } from '../context/AuthReducerTypes';
-import { projectAuth } from '../firebase/config';
+import { useEffect, useState } from 'react';
+import { LOGIN } from '../context/authReducerTypes';
+import { projectAuth, projectFirestore } from '../firebase/config';
+import { useAuthContext } from './useAuthContext';
 
 export const useLogin = () => {
-  const [isCancelled, setIsCanceller] = useState(false);
-  const [error, setError] = useState(null);
+  const [isCancelled, setIsCancelled] = useState(false);
   const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
 
   const { dispatch } = useAuthContext();
 
@@ -15,7 +15,11 @@ export const useLogin = () => {
     setIsPending(true);
 
     try {
-      const res = await projectAuth.signInWithEmailAndPassword();
+      const res = await projectAuth.signInWithEmailAndPassword(email, password);
+      await projectFirestore
+        .collection('users')
+        .doc(res.user.uid)
+        .update({ online: true });
 
       dispatch({ type: LOGIN, payload: res.user });
 
@@ -30,6 +34,9 @@ export const useLogin = () => {
       }
     }
   };
+
+  console.log('isPending', isPending);
+  console.log('isCancelled', isCancelled);
 
   useEffect(() => {
     return () => {

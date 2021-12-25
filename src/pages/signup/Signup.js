@@ -3,6 +3,22 @@ import { useSignup } from '../../hooks/useSignup';
 import { checkThumbnail } from '../../lib/checkThumbnail';
 import './Signup.css';
 
+const validateThumbnail = (selectedThumbnail) => {
+  if (!selectedThumbnail) {
+    return 'Please select a thumbnail!';
+  }
+
+  if (!selectedThumbnail.type.includes('image')) {
+    return 'Please select an image!';
+  }
+
+  if (selectedThumbnail.size > 1000000) {
+    return 'Image size must be less than 1MB!';
+  }
+
+  return null;
+};
+
 const Signup = () => {
   const [userInfo, setUserInfo] = useState({
     name: '',
@@ -19,7 +35,7 @@ const Signup = () => {
       if (e.target.name === 'thumbnail') {
         const thumbnail = e.target.files[0];
 
-        setThumbnailError(checkThumbnail(thumbnail));
+        setThumbnailError(validateThumbnail(thumbnail));
 
         return { ...prevUserInfo, thumbnail };
       } else {
@@ -82,10 +98,10 @@ const Signup = () => {
         {thumbnailError && <div className='error'>{thumbnailError}</div>}
       </label>
 
-      <button className='btn' disabled={isPending && true}>
-        Sign Up
+      <button className='btn' type='submit' disabled={isPending && true}>
+        {isPending ? <p>Signing...</p> : <p>Sign Up</p>}{' '}
       </button>
-      {isPending && <p>Signing...</p>}
+
       {error && <p>{error}</p>}
     </form>
   );
