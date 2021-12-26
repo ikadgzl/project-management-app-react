@@ -80,7 +80,7 @@ const Create = () => {
     const project = {
       name: projectInfo.name,
       details: projectInfo.details,
-      deuDate: timeStamp.fromDate(new Date(projectInfo.dueDate)),
+      dueDate: timeStamp.fromDate(new Date(projectInfo.dueDate)),
       comments: [],
       createdBy,
       assignedUsersList
@@ -92,8 +92,6 @@ const Create = () => {
       navigate('/');
     }
   };
-
-  console.log(response, 'response');
 
   return (
     <div className='create-form'>
