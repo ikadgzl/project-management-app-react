@@ -44,7 +44,7 @@ const INITIAL_STATE = {
 
 export const useFirestore = (collection) => {
   const [response, dispatch] = useReducer(firestoreReducer, INITIAL_STATE);
-  const [isCancelled, setIsCancelled] = useState(null);
+  const [isCancelled, setIsCancelled] = useState(false);
 
   const ref = projectFirestore.collection(collection);
 

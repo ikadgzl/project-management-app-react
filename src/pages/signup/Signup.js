@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useSignup } from '../../hooks/useSignup';
-import { checkThumbnail } from '../../lib/checkThumbnail';
 import './Signup.css';
 
 const validateThumbnail = (selectedThumbnail) => {

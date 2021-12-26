@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import './Create.css';
 import Select from 'react-select';
 import { useCollection } from '../../hooks/useCollection';
+import { timeStamp } from '../../firebase/config';
+import { useAuthContext } from '../../hooks/useAuthContext';
+import { useFirestore } from '../../hooks/useFirestore';
+import { useNavigate } from 'react-router-dom';
 
 const categories = [
   { value: 'development', label: 'Development' },
@@ -19,8 +23,12 @@ const Create = () => {
   const [category, setCategory] = useState('');
   const [assignedUsers, setAssignedUsers] = useState([]);
   const [users, setUsers] = useState([]);
+  const [formError, setFormError] = useState(null);
 
+  const navigate = useNavigate();
   const { documents } = useCollection('users');
+  const { addDocument, response } = useFirestore('projects');
+  const { user } = useAuthContext();
 
   useEffect(() => {
     if (documents) {
@@ -40,11 +48,52 @@ const Create = () => {
     }));
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    console.log(projectInfo, category, assignedUsers);
+    setFormError(null);
+
+    if (!category) {
+      setFormError('Please select a project category');
+
+      return;
+    }
+
+    if (assignedUsers.length < 1) {
+      setFormError('Please select at least one user to assign the project');
+
+      return;
+    }
+
+    const createdBy = {
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      id: user.uid
+    };
+
+    const assignedUsersList = assignedUsers.map(
+      ({ value: { displayName, photoURL, id } }) => {
+        return { displayName, photoURL, id };
+      }
+    );
+
+    const project = {
+      name: projectInfo.name,
+      details: projectInfo.details,
+      deuDate: timeStamp.fromDate(new Date(projectInfo.dueDate)),
+      comments: [],
+      createdBy,
+      assignedUsersList
+    };
+
+    await addDocument(project);
+
+    if (!response.error) {
+      navigate('/');
+    }
   };
+
+  console.log(response, 'response');
 
   return (
     <div className='create-form'>
@@ -98,9 +147,15 @@ const Create = () => {
           />
         </label>
 
-        <button className='btn' type='submit'>
-          Add Project
+        <button
+          className='btn'
+          type='submit'
+          disabled={response.isPending && true}
+        >
+          {!response.isPending ? 'Add Project' : 'Adding...'}
         </button>
+
+        {formError && <p className='error'>{formError}</p>}
       </form>
     </div>
   );
