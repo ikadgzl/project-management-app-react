@@ -9,7 +9,7 @@ import {
 
 import Dashboard from './pages/dashboard/Dashboard';
 import Login from './pages/login/Login';
-import Project from './pages/project/Project';
+import Projects from './pages/project/Project';
 import Signup from './pages/signup/Signup';
 import Create from './pages/create/Create';
 
@@ -38,8 +38,8 @@ function App() {
                 element={user ? <Create /> : <Navigate to='/login' />}
               />
               <Route
-                path='/project'
-                element={user ? <Project /> : <Navigate to='/login' />}
+                path='/projects/:id'
+                element={user ? <Projects /> : <Navigate to='/login' />}
               />
               <Route
                 path='/login'
