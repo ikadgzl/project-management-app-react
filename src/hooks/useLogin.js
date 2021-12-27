@@ -35,9 +35,6 @@ export const useLogin = () => {
     }
   };
 
-  console.log('isPending', isPending);
-  console.log('isCancelled', isCancelled);
-
   useEffect(() => {
     return () => {
       setIsCancelled(true);

@@ -4,7 +4,6 @@ import Avatar from './Avatar';
 import './ProjectList.css';
 
 const ProjectList = ({ projects }) => {
-  console.log(projects);
   return (
     <div className='project-list'>
       {projects.length === 0 ? (

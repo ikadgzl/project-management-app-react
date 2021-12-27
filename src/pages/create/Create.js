@@ -80,6 +80,7 @@ const Create = () => {
     const project = {
       name: projectInfo.name,
       details: projectInfo.details,
+      category: category.value,
       dueDate: timeStamp.fromDate(new Date(projectInfo.dueDate)),
       comments: [],
       createdBy,

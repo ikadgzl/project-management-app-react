@@ -18,6 +18,7 @@
 }
 
 .project-summary .details {
+  word-break: break-all;
   margin: 30px 0;
   color: var(--text-color);
   line-height: 1.8em;
