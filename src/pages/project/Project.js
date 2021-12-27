@@ -19,7 +19,7 @@ const Projects = () => {
   return (
     <div className='project-details'>
       <ProjectSummary project={document} />
-      <ProjectComment />
+      <ProjectComment project={document} />
     </div>
   );
 };

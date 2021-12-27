@@ -3,6 +3,7 @@ import { projectFirestore, timeStamp } from '../firebase/config';
 
 const IS_PENDING = 'IS_PENDING';
 const ADDED_DOCUMENT = 'ADDED_DOCUMENT';
+const UPDATED_DOCUMENT = 'UPDATED_DOCUMENT';
 const DELETED_DOCUMENT = 'DELETED_DOCUMENT';
 const ERROR = 'ERROR';
 
@@ -12,6 +13,14 @@ const firestoreReducer = (state, action) => {
       return { document: null, isPending: true, error: null, success: false };
 
     case ADDED_DOCUMENT:
+      return {
+        document: action.payload,
+        isPending: false,
+        error: null,
+        success: true
+      };
+
+    case UPDATED_DOCUMENT:
       return {
         document: action.payload,
         isPending: false,
@@ -58,11 +67,28 @@ export const useFirestore = (collection) => {
     try {
       const createdAt = timeStamp.fromDate(new Date());
       const addedDocument = await ref.add({ ...doc, createdAt });
-      console.log(addedDocument);
 
       dispatchIfNotCancelled({ type: ADDED_DOCUMENT, payload: addedDocument });
     } catch (error) {
       dispatchIfNotCancelled({ type: ERROR, payload: error.message });
+    }
+  };
+
+  const updateDocument = async (id, updates) => {
+    dispatch({ type: IS_PENDING });
+
+    try {
+      const updatedDocument = await ref.doc(id).update(updates);
+
+      dispatchIfNotCancelled({
+        type: UPDATED_DOCUMENT,
+        payload: updatedDocument
+      });
+
+      return updatedDocument;
+    } catch (error) {
+      dispatchIfNotCancelled({ type: ERROR, payload: error.message });
+      return null;
     }
   };
 
@@ -87,5 +113,5 @@ export const useFirestore = (collection) => {
     };
   });
 
-  return { addDocument, deleteDocument, response };
+  return { addDocument, updateDocument, deleteDocument, response };
 };
